@@ -1,5 +1,5 @@
 from collections import Counter
-from wordle.core.result import Result
+from wordle.core.result import Result, ensure_result
 
 def get_result(guess, answer):
     """ Given a guess and a known answer, return what the result would be """
@@ -29,6 +29,7 @@ def get_result(guess, answer):
 def filter_word_list(wordlist, guess, result):
     """ Filter down a list of possible words based on a guess and result """
     out = []
+    result = ensure_result(result)
     for w in wordlist:
         # If the word was the answer, it would yield the same result
         if get_result(guess, w) == result:
