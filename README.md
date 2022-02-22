@@ -4,16 +4,16 @@ Helper functions, word lists, and analysis tools for Wordle and other Wordle var
 
 ## Installation
 
-```
-pip install wordle-utils
+```bash
+$ pip install wordle-utils
 ```
 
 ## Basic Usage
 
-To run a bot that solves wordle for you, just run the following:
+To run a bot that solves wordle for you, just run the following from your terminal after installing the package:
 
-```
-solve_wordle
+```bash
+$ solve_wordle
 ```
 
 The bot will output guesses, input what the "result" of those guesses is. `_` is a miss/blank, `!` is a correct/green, and `?` is a wrong spot/yellow letter.
