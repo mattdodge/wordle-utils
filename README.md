@@ -40,6 +40,16 @@ what_do_i_know('robot', 'later', 'trout')
 
 This library has some helper functions you can use in your own scripts. These will work for most Wordle variants.
 
+**Result**
+
+This library includes a `Result` enum (`wordle.core.result.Result`) for possible results of a guess. A result can be a miss, wrong spot, or correct. In most functions you can replace the enum with the shorthand string version of a result
+
+* `Result.correct` / `'!'` - the letter appears in this exact spot in the answer
+* `Result.wrong_spot` / `'?'` - the letter appears somewhere else in the answer
+* `Result.miss` / `'_'` - the letter does not appear in the word
+
+There is some interesting behavior when guesses or answers contain duplicate letters. The [test cases](https://github.com/mattdodge/wordle-utils/blob/master/wordle/tests/test_result.py) should give you a better idea of these. The behavior is meant to mimic the behavior of the actual Wordle game.
+
 **get_result**
 
 Given a guess and a known answer, return the "result" of the guess. This will be an array of `Result` objects.
