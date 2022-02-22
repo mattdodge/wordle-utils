@@ -48,13 +48,6 @@ For example, if the answer was ROBOT and the guess was TROUT:
 ```python
 from wordle.core.gameplay import get_result
 
-get_result('robot', 'trout')
-#.
-
-For example, if the answer was ROBOT and the guess was TROUT:
-```python
-from wordle.core.gameplay import get_result
-
 get_result('trout', 'robot')
 # [Result.miss, Result.wrong_spot, Result.wrong_spot, Result.miss, Result.correct]
 ```
