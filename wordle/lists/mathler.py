@@ -1,3 +1,4 @@
+from math import isclose
 from pathlib import Path
 import re
 
@@ -37,9 +38,11 @@ def build_word_list(expressions, desired_length=None):
         if not any(['+' in expr, '-' in expr, '*' in expr, '/' in expr]):
             continue
         result = eval(expr)
-        if result < 0 or not isinstance(result, int):
+        # Make sure it's an integer
+        # Don't just do an isinstance check here, we might have weird Python floating
+        if result < 0 or not isclose(round(result), result):
             continue
-        result = str(result)
+        result = str(round(result))
         if desired_length is None:
             wordlist.append(expr + '=' + result)
         elif len(expr) + 1 + len(result) == desired_length:
@@ -78,19 +81,25 @@ with open(Path(__file__).parent / 'expressions-5.txt') as f:
 with open(Path(__file__).parent / 'expressions-6.txt') as f:
     EXPRESSIONS6 = [w.strip() for w in f.readlines()]
 
-try:
-    with open(Path(__file__).parent / 'expressions-7.txt') as f:
-        EXPRESSIONS7 = [w.strip() for w in f.readlines()]
-except FileNotFoundError:
-    # Generate these on your own with generate_all_expressions(7)
-    EXPRESSIONS7 = []
+EXPRESSIONS7 = []
+EXPRESSIONS8 = []
 
-try:
-    with open(Path(__file__).parent / 'expressions-8.txt') as f:
-        EXPRESSIONS8 = [w.strip() for w in f.readlines()]
-except FileNotFoundError:
-    # Generate these on your own with generate_all_expressions(8)
-    EXPRESSIONS8 = []
+def load_big_files():
+    """ Don't do this by default to save time/memory """
+    global EXPRESSIONS7, EXPRESSIONS8
+    try:
+        with open(Path(__file__).parent / 'expressions-7.txt') as f:
+            EXPRESSIONS7 = [w.strip() for w in f.readlines()]
+    except FileNotFoundError:
+        # Generate these on your own with generate_all_expressions(7)
+        pass
+
+    try:
+        with open(Path(__file__).parent / 'expressions-8.txt') as f:
+            EXPRESSIONS8 = [w.strip() for w in f.readlines()]
+    except FileNotFoundError:
+        # Generate these on your own with generate_all_expressions(8)
+        pass
 
 
 def get_target_words(expr_words, target_result):
