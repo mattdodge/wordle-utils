@@ -3,42 +3,43 @@ import re
 from wordle.core.result import ensure_result, is_winner
 from wordle.core.gameplay import filter_word_list
 from wordle.guess import Frequency, Exhaustive
-from wordle.lists import ANSWERS
+from wordle.lists import ANSWERS, GUESSES
 
-def solve(wordlist=ANSWERS):
+def solve(wordlist=ANSWERS, guesses=GUESSES, diff_answers_guesses=True):
     guesses = 0
-    wordlist = deepcopy(wordlist)
+    remaining_words = deepcopy(wordlist)
 
     while True:
-        if len(wordlist) == 0:
+        if len(remaining_words) == 0:
             print("I give up")
             break
-        print(f"{len(wordlist)} valid words remain")
+        print(f"{len(remaining_words)} valid words remain")
 
         # Choose a good guessing algorithm
         # If we're down to the end, look for any possible
         # word to guess, even wrong ones
-        if len(wordlist) < 50:
+        if len(remaining_words) < 50 and diff_answers_guesses:
+            Exhaustive.possible_guesses = guesses
             Exhaustive.guess_from_valid_only = False
-            guess = Exhaustive.guess(wordlist)
+            guess = Exhaustive.guess(remaining_words)
 
         # After narrowing our list a bit we can do an exhaustive
         # search for a good guess
-        elif len(wordlist) < 500:
-            guess = Exhaustive.guess(wordlist)
+        elif len(remaining_words) < 500:
+            guess = Exhaustive.guess(remaining_words)
 
         # In the early rounds use a fast frequency analysis to guess
         else:
-            guess = Frequency.guess(wordlist)
+            guess = Frequency.guess(remaining_words)
 
         guesses += 1
-        certainty = round(1.0 / len(wordlist) * 100)
+        certainty = round(1.0 / len(remaining_words) * 100)
         print(f"Guess: {guess.upper()} ({certainty}% certain)")
-        result = gather_response()
+        result = gather_response(len(remaining_words[0]))
         if is_winner(result):
             print(f"Oh yeah, {guesses} guesses")
             break
-        wordlist = filter_word_list(wordlist, guess, result)
+        remaining_words = filter_word_list(remaining_words, guess, result)
     return guesses
 
 def gather_response(strlen=5):
