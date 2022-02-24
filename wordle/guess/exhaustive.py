@@ -16,12 +16,16 @@ class Exhaustive(GuessingAlgorithm):
     # to narrow down letters. Set this variable to False to perform that behavior
     guess_from_valid_only = True
 
+    # Set this variable to customize the list of possible guesses if we're doing a
+    # search of non-valid answers
+    possible_guesses = GUESSES
+
     @classmethod
     def guess(cls, remaining_words):
         if cls.guess_from_valid_only:
             guess_words = deepcopy(remaining_words)
         else:
-            guess_words = deepcopy(GUESSES)
+            guess_words = deepcopy(cls.possible_guesses)
 
         strlen = len(remaining_words[0])
 
