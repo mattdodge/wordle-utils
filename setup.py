@@ -27,7 +27,7 @@ setuptools.setup(
     include_package_data=True,
     entry_points='''
         [console_scripts]
-        solve_wordle=wordle.play:solve
+        solve_wordle=wordle.play.wordle:play_wordle
     ''',
     classifiers=[
         "Programming Language :: Python :: 3",
