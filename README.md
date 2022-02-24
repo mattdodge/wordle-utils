@@ -75,3 +75,28 @@ words = ['claim', 'email', 'image', 'sigma']
 new_words = filter_word_list(words, 'stain', '__!!_')
 # ['claim', 'email']
 ```
+
+## Variants
+
+This library supports Wordle variants as well, since many of the gameplay strategies and functions are the same.
+
+### Mathler/Nerdle
+
+These are both math based variants of Wordle where rather than guessing words you are guessing equations or expressions
+
+* [Mathler](https://mathler.com) - the target answer is given to you, find an expression that equals it. Comes in [easy](https://easy.mathler.com) and [hard](https://hard.mathler.com) variants as well.
+* [Nerdle](https://nerdlegame.com) - you provide a full 8-digit equation, expression on one side, an equals sign, and then the result on the other side.
+
+To have the solving bot play either of these games, call their solve methods
+
+```python
+# Play Mathler (normal mode) with a target number of 314
+from wordle.play.mathler import play_mathler
+play_mathler(314)
+```
+
+```python
+# Play Nerdle
+from wordle.play.mathler import play_nerdle
+play_nerdle()
+```
