@@ -5,5 +5,5 @@ from random import choice
 class Random(GuessingAlgorithm):
 
     @classmethod
-    def guess(cls, remaining_words):
-        return choice(remaining_words)
+    def guess(cls, remaining_words, possible_guesses=None):
+        return choice(possible_guesses or remaining_words)

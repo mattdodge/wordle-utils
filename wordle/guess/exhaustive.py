@@ -11,23 +11,9 @@ guess that leads to the smallest word list on average will be the guess
 """
 class Exhaustive(GuessingAlgorithm):
 
-    # By default, only simluate guesses from valid remaining words
-    # In some cases it makes sense to guess a word that may not be correct in order
-    # to narrow down letters. Set this variable to False to perform that behavior
-    guess_from_valid_only = True
-
-    # Set this variable to customize the list of possible guesses if we're doing a
-    # search of non-valid answers
-    possible_guesses = GUESSES
-
     @classmethod
-    def guess(cls, remaining_words):
-        if cls.guess_from_valid_only:
-            guess_words = deepcopy(remaining_words)
-        else:
-            guess_words = deepcopy(cls.possible_guesses)
-
-        strlen = len(remaining_words[0])
+    def guess(cls, remaining_words, possible_guesses=None):
+        guess_words = cls._get_possible_guesses(remaining_words, possible_guesses)
 
         # These represent the current guess and what its worst case and average case
         # is for number of remaining words after the guess
@@ -38,23 +24,11 @@ class Exhaustive(GuessingAlgorithm):
         for guess_word in guess_words:
             # If we have a lot of words left don't even consider guessing something
             # with a double letter in it
-            if len(remaining_words) > 1000 and len(set(guess_word)) < strlen:
+            strlen = len(remaining_words[0])
+            if len(remaining_words) > 1000 and len(set(guess)) < strlen:
                 continue
 
-            # Figure out the worst case and average case for this particular guess word
-            word_worst = 0
-            word_total = 0
-            for possible_answer in remaining_words:
-                result = get_result(guess_word, possible_answer)
-                # If our guess was exactly right there are no guesses left
-                if is_winner(result):
-                    continue
-                new_words = len(filter_word_list(remaining_words, guess_word, result))
-                word_total += new_words
-                word_worst = max(new_words, word_worst)
-                if word_total > best_total_score:
-                    # It's already worse, no sense continuing
-                    break
+            word_worst, word_total = cls.get_guess_score(guess_word, remaining_words, best_total_score)
 
             # If the average word list is better, use this guess
             if word_total < best_total_score:
@@ -67,3 +41,46 @@ class Exhaustive(GuessingAlgorithm):
                 best_worst_score = word_worst
                 best_total_score = word_total
         return guess
+
+    @classmethod
+    def get_guess_score(cls, guess, remaining_words, existing_best_total=None):
+        # Figure out the worst case and average case for this particular guess word
+        word_worst = 0
+        word_total = 0
+        for possible_answer in remaining_words:
+            result = get_result(guess, possible_answer)
+            # If our guess was exactly right there are no guesses left
+            if is_winner(result):
+                continue
+            new_words = len(filter_word_list(remaining_words, guess, result))
+            word_total += new_words
+            word_worst = max(new_words, word_worst)
+            if existing_best_total and word_total > existing_best_total:
+                # It's already worse, no sense continuing
+                break
+        return word_worst, word_total
+
+    @classmethod
+    def score_guess(cls, guess, remaining_words, possible_guesses=None):
+        better = worse = 0
+        guess_worst, guess_total = cls.get_guess_score(guess, remaining_words)
+
+        guess_words = cls._get_possible_guesses(remaining_words, possible_guesses)
+        for guess_word in guess_words:
+            word_worst, word_total = cls.get_guess_score(guess_word, remaining_words)
+
+            if word_total < guess_total:
+                better += 1
+            elif word_total == guess_total and word_worst < guess_worst:
+                better += 1
+            elif word_total > guess_total:
+                worse += 1
+            elif word_total == guess_total and word_worst > guess_worst:
+                worse += 1
+        return worse / (better + worse)
+
+    @classmethod
+    def _get_possible_guesses(cls, remaining_words, possible_guesses):
+        if len(remaining_words) <= 50:
+            return possible_guesses
+        return remaining_words

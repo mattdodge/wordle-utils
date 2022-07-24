@@ -9,8 +9,6 @@ class Solver():
     answers = []
     guesses = []
 
-    diff_answers_guesses = True
-
     def solve(self):
         guesses = 0
         remaining_words = deepcopy(self.answers)
@@ -22,7 +20,7 @@ class Solver():
             print(f"{len(remaining_words)} valid words remain")
 
             GuessingAlgorithm = self.get_guessing_algorithm(remaining_words)
-            guess = GuessingAlgorithm.guess(remaining_words)
+            guess = GuessingAlgorithm.guess(remaining_words, self.guesses)
             guesses += 1
             certainty = round(1.0 / len(remaining_words) * 100)
             print(f"Guess: {guess.upper()} ({certainty}% certain)")
@@ -34,13 +32,9 @@ class Solver():
         return guesses
 
     def get_guessing_algorithm(self, remaining_words):
-        if len(remaining_words) < 50 and self.diff_answers_guesses:
-            Exhaustive.guess_from_valid_only = False
-            return Exhaustive
-
         # After narrowing our list a bit we can do an exhaustive
         # search for a good guess
-        elif len(remaining_words) < 500:
+        if len(remaining_words) < 500:
             return Exhaustive
 
         # In the early rounds use a fast frequency analysis to guess

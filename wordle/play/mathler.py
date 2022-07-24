@@ -2,7 +2,7 @@ from wordle.lists.mathler import get_target_words
 from wordle.play import Solver
 
 class MathlerSolver(Solver):
-    diff_answers_guesses = False
+    pass
 
 def play_mathler_easy(target_answer):
     from wordle.lists.mathler import EXPRESSIONS5
