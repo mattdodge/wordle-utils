@@ -30,12 +30,9 @@ def guess_scores(*guesses, wordlist=ANSWERS, guesslist=GUESSES):
 
         result = get_result(guess, answer)
         words = filter_word_list(words, guess, result)
-    print()
-    for guess in out:
-        print(f"Guess {guess['guess'].upper()} - {_get_grade(guess['score'])} {guess['score'] * 100:.1f}% (Best: {guess['best'].upper()})")
     return out
 
-def _get_grade(score):
+def get_grade(score):
     GRADES = [
         (0.98, 'A+'),
         (0.92, 'A'),

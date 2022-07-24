@@ -28,6 +28,7 @@ setuptools.setup(
     entry_points='''
         [console_scripts]
         solve_wordle=wordle.play.wordle:play_wordle
+        analyze_wordle=wordle.play.wordle:analyze_wordle
     ''',
     classifiers=[
         "Programming Language :: Python :: 3",
