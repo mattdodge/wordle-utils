@@ -81,6 +81,6 @@ class Exhaustive(GuessingAlgorithm):
 
     @classmethod
     def _get_possible_guesses(cls, remaining_words, possible_guesses):
-        if len(remaining_words) <= 50:
+        if len(remaining_words) <= 50 and len(possible_guesses) != 0:
             return possible_guesses
         return remaining_words
